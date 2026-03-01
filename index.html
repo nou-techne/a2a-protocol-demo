@@ -3,840 +3,998 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Workshop A2A Protocol — Live Demo</title>
+  <title>Workshop — Agent-to-Agent Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0a0a;
-      --surface: #111111;
+      --surface: #141414;
       --surface2: #1a1a1a;
       --border: #2a2a2a;
-      --text: #e8e8e8;
-      --muted: #888888;
+      --border2: #333333;
+      --text: #c8c2ba;
+      --text-bright: #ece6de;
+      --muted: #777777;
+      --faint: #444444;
+      --primary: #c4956a;
+      --primary-dim: #8a6545;
+      --primary-glow: rgba(196, 149, 106, 0.07);
+      --green: #8aba8a;
+      --blue: #7a9ab5;
+      --dia-color: #7a9ab5;
       --nou-color: #c4956a;
-      --dia-color: #8bbfff;
-      --system-color: #7ccfb8;
-      --steward-color: #a78bfa;
-      --phase-active: #fbbf24;
-      --green: #7ccfb8;
-      --red: #ef4444;
+      --system-color: #8aba8a;
+      --font-display: 'Cormorant', serif;
+      --font-body: 'Source Serif 4', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
     }
+
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     /* ── Header ── */
-    .header {
-      background: var(--surface);
+    header {
+      padding: 48px 48px 32px;
       border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .header-logo {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, var(--nou-color), var(--dia-color));
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-    .header-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-    .header-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-    .header-links {
-      display: flex;
-      gap: 16px;
-      font-size: 11px;
-    }
-    .header-links a {
-      color: var(--muted);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .header-links a:hover {
-      color: var(--text);
-      border-bottom-color: var(--border);
-    }
-    .header-meta {
-      margin-top: 16px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .header-meta span {
-      margin-right: 24px;
-    }
-    .header-meta .live-dot {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: var(--green);
-      border-radius: 50%;
-      margin-right: 5px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    /* ── Phase bar ── */
-    .phase-bar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 32px;
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-    .phase-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing: 0.08em;
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
       text-transform: uppercase;
-    }
-    .phase-item.active {
-      color: var(--phase-active);
-    }
-    .phase-item.done {
-      color: var(--green);
-    }
-    .phase-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-    .phase-item.active .phase-dot {
-      background: var(--phase-active);
-      animation: pulse 1.5s infinite;
-    }
-    .phase-item.done .phase-dot {
-      background: var(--green);
-    }
-    .phase-arrow {
-      margin: 0 10px;
-      color: var(--border);
-      font-size: 11px;
-    }
-
-    /* ── Layout ── */
-    .layout {
-      display: grid;
-      grid-template-columns: 260px 1fr 300px;
-      gap: 0;
-      height: calc(100vh - 130px);
-    }
-    .col {
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 20px;
-    }
-    .col:last-child { border-right: none; }
-    .col-title {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      letter-spacing: 0.14em;
       color: var(--muted);
       margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
+    }
+    .eyebrow a { color: var(--muted); }
+    .eyebrow a:hover { color: var(--primary); text-decoration: none; }
+    .eyebrow .sep { margin: 0 8px; color: var(--faint); }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 3.2rem;
+      font-weight: 400;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
     }
 
-    /* ── Agent card ── */
-    .agent-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-    .agent-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .agent-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s infinite;
-    }
-    .agent-dot.executing {
-      background: var(--phase-active);
-    }
-    .agent-name {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .agent-name.nou { color: var(--nou-color); }
-    .agent-name.dia { color: var(--dia-color); }
-    .agent-status {
-      font-size: 10px;
-      color: var(--muted);
-      margin-left: auto;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .agent-status.executing { color: var(--phase-active); }
-    .agent-capacity {
-      margin-bottom: 8px;
-    }
-    .capacity-bar {
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-top: 4px;
-    }
-    .capacity-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.5s ease;
-    }
-    .capacity-fill.nou { background: var(--nou-color); }
-    .capacity-fill.dia { background: var(--dia-color); }
-    .capacity-label {
-      font-size: 10px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-    }
-    .capability-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 8px;
-    }
-    .tag {
-      font-size: 9px;
-      letter-spacing: 0.05em;
-      padding: 2px 6px;
-      border-radius: 3px;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      text-transform: lowercase;
-    }
-    .tag.matched {
-      border-color: var(--green);
-      color: var(--green);
-    }
-    .agent-context {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
+    h1 em {
+      color: var(--primary);
       font-style: italic;
     }
 
-    /* ── Sprint card ── */
-    .sprint-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 10px;
+    .header-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.65;
+      font-weight: 300;
     }
-    .sprint-title {
-      font-size: 13px;
-      font-weight: 600;
+
+    .header-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .meta-value {
       color: var(--text);
+      margin-left: 6px;
+    }
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* ── Main content ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 48px 0;
+    }
+
+    /* ── Section title ── */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section { margin-bottom: 64px; }
+
+    /* ── What this is ── */
+    .intro-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .intro-prose h2 {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 400;
+      color: var(--text-bright);
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .intro-prose p {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.75;
+      margin-bottom: 14px;
+      font-weight: 300;
+    }
+    .intro-prose p:last-child { margin-bottom: 0; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .stat-card {
+      background: var(--surface);
+      padding: 24px 20px;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-sub {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Five phases ── */
+    .phases-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .phase-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 5px 12px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .phase-badge.done {
+      border-color: var(--primary-dim);
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .phase-arrow {
+      color: var(--faint);
+      font-size: 0.8rem;
+      padding: 0 4px;
+    }
+
+    .phases-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .phase-card {
+      background: var(--surface);
+      padding: 20px 16px;
+    }
+    .phase-name {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary);
       margin-bottom: 6px;
     }
-    .sprint-meta {
-      font-size: 10px;
+    .phase-desc {
+      font-size: 0.82rem;
       color: var(--muted);
-      margin-bottom: 10px;
+      line-height: 1.55;
+      font-weight: 300;
     }
-    .sprint-status-bar {
+
+    /* ── Agents ── */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+    }
+    .agent-card:hover { border-color: var(--border2); }
+    .agent-name-row {
       display: flex;
-      gap: 4px;
+      align-items: baseline;
+      gap: 12px;
       margin-bottom: 12px;
     }
-    .status-step {
+    .agent-name {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .agent-name.dia { color: var(--dia-color); }
+    .agent-role {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+    .agent-craft {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .cap-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .cap-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .cap-tag.matched {
+      border-color: var(--primary-dim);
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    .cap-tag.dia-matched {
+      border-color: #4a7a9b;
+      color: var(--dia-color);
+      background: rgba(122, 154, 181, 0.07);
+    }
+    .agent-status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Protocol trace ── */
+    .trace-container {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .trace-header {
+      background: var(--surface);
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .trace-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .trace-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .trace-body {
+      background: var(--surface2);
+    }
+    .trace-event {
+      display: grid;
+      grid-template-columns: 80px 120px 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      opacity: 0;
+      transform: translateY(3px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .trace-event:last-child { border-bottom: none; }
+    .trace-event.visible { opacity: 1; transform: translateY(0); }
+    .trace-event:hover { background: var(--surface); }
+    .trace-time {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--faint);
+      padding-top: 2px;
+    }
+    .trace-agent {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: lowercase;
+      padding-top: 2px;
+    }
+    .trace-agent.nou { color: var(--nou-color); }
+    .trace-agent.dia { color: var(--dia-color); }
+    .trace-agent.system { color: var(--system-color); }
+    .trace-content {}
+    .trace-phase-tag {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--faint);
+      margin-bottom: 3px;
+    }
+    .trace-message {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.55;
+      font-weight: 300;
+    }
+
+    /* ── Negotiation ── */
+    .neg-log {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .neg-entry {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 16px;
+    }
+    .neg-entry:last-child { border-bottom: none; }
+    .neg-who {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+    .neg-action {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .neg-action.accepted { color: var(--green); }
+    .neg-text {
+      font-size: 0.92rem;
+      color: var(--text);
+      font-weight: 300;
+      font-style: italic;
+    }
+
+    /* ── Sprint ── */
+    .sprint-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px;
+    }
+    .sprint-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    .sprint-roadmap {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+    .sprint-status-pipeline {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .pipeline-step {
       flex: 1;
       height: 3px;
       border-radius: 2px;
       background: var(--border);
+      position: relative;
     }
-    .status-step.done { background: var(--green); }
-    .status-step.active { background: var(--phase-active); }
-
-    .progress-log {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .pipeline-step.done { background: var(--primary-dim); }
+    .pipeline-step::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 8px;
+      left: 0;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+      white-space: nowrap;
+    }
+    .sprint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 32px;
+    }
+    .sprint-col-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
     .progress-entry {
-      font-size: 11px;
-      color: var(--muted);
-      padding: 6px 8px;
+      padding: 10px 14px;
       border-left: 2px solid var(--border);
-      background: var(--surface);
+      margin-bottom: 8px;
+      background: var(--surface2);
       border-radius: 0 4px 4px 0;
     }
-    .progress-entry .entry-agent {
-      color: var(--dia-color);
-      font-weight: 600;
-      margin-right: 6px;
+    .progress-time {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--faint);
+      margin-bottom: 3px;
     }
-    .progress-entry .entry-time {
-      font-size: 9px;
-      color: var(--border);
-      margin-left: 6px;
-    }
-    .progress-bar-wrap {
-      margin-top: 8px;
-    }
-    .progress-bar-track {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--dia-color);
-      border-radius: 2px;
-      transition: width 1s ease;
+    .progress-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.5;
     }
     .proof-block {
-      margin-top: 10px;
-      padding: 8px;
-      background: var(--surface);
-      border: 1px solid var(--green);
-      border-radius: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--primary-dim);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-top: 16px;
     }
     .proof-label {
-      font-size: 9px;
-      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
+      letter-spacing: 0.1em;
+      color: var(--primary-dim);
+      margin-bottom: 6px;
     }
     .proof-link {
-      font-size: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
       color: var(--text);
       word-break: break-all;
-      text-decoration: none;
     }
-    .proof-link:hover { text-decoration: underline; }
-    .capability-match {
+    .proof-stats {
+      display: flex;
+      gap: 24px;
       margin-top: 10px;
-      padding: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
     }
-    .match-label {
-      font-size: 9px;
+    .proof-stat {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
     }
-    .match-agent {
-      font-size: 11px;
-      color: var(--dia-color);
+    .proof-stat strong {
+      color: var(--primary);
+      font-weight: 500;
     }
 
-    /* ── Protocol stream ── */
-    .event-list {
+    /* ── Context ── */
+    .context-note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary-dim);
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.65;
+    }
+    .context-note strong { color: var(--text); font-weight: 400; }
+
+    /* ── Replay button ── */
+    .replay-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .replay-btn:hover { color: var(--text); border-color: var(--border2); }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 80px;
+      border-top: 1px solid var(--border);
+      padding: 48px 48px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 40px;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .footer-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 380px;
+    }
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .footer-links {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-    .event-item {
-      display: flex;
-      gap: 10px;
-      padding: 8px 10px;
-      background: var(--surface2);
-      border-radius: 6px;
-      border-left: 3px solid var(--border);
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .event-item.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .event-item.nou { border-left-color: var(--nou-color); }
-    .event-item.dia { border-left-color: var(--dia-color); }
-    .event-item.system { border-left-color: var(--system-color); }
-    .event-item.steward { border-left-color: var(--steward-color); }
-    .event-icon {
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .event-body {}
-    .event-type-badge {
-      font-size: 9px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .footer-links a {
+      font-size: 0.88rem;
       color: var(--muted);
-      margin-bottom: 2px;
+      font-weight: 300;
     }
-    .event-agent {
-      font-size: 10px;
-      font-weight: 600;
-      margin-right: 6px;
-    }
-    .event-agent.nou { color: var(--nou-color); }
-    .event-agent.dia { color: var(--dia-color); }
-    .event-agent.system { color: var(--system-color); }
-    .event-message {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.5;
-    }
-    .event-time {
-      font-size: 9px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    /* ── Negotiation ── */
-    .negotiation-block {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .neg-entry {
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-    }
-    .neg-entry:last-child { border-bottom: none; }
-    .neg-action {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-    }
-    .neg-action.accepted { color: var(--green); }
-
-    /* ── Footer ── */
-    .footer {
-      background: var(--surface);
+    .footer-links a:hover { color: var(--primary); text-decoration: none; }
+    .footer-bottom {
+      padding-top: 24px;
       border-top: 1px solid var(--border);
-      padding: 12px 32px;
-      font-size: 10px;
-      color: var(--muted);
       display: flex;
-      gap: 24px;
+      justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-    }
-    .footer a { color: var(--muted); text-decoration: none; }
-    .footer a:hover { color: var(--text); }
-    .footer .sep { color: var(--border); }
-
-    /* ── Replay button ── */
-    .replay-btn {
-      position: fixed;
-      bottom: 56px;
-      right: 24px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: inherit;
-      font-size: 11px;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-      letter-spacing: 0.04em;
-    }
-    .replay-btn:hover {
-      color: var(--text);
-      border-color: var(--text);
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
-    @media (max-width: 900px) {
-      .layout { grid-template-columns: 1fr; height: auto; }
-      .col { border-right: none; border-bottom: 1px solid var(--border); }
-      .phase-bar { flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 800px) {
+      header, main, footer { padding-left: 24px; padding-right: 24px; }
+      h1 { font-size: 2.2rem; }
+      .intro-block, .agents-grid, .sprint-grid, .phases-grid,
+      .footer-grid { grid-template-columns: 1fr; }
+      .trace-event { grid-template-columns: 60px 90px 1fr; }
+      .footer-grid { gap: 32px; }
     }
   </style>
 </head>
 <body>
 
 <!-- ── Header ── -->
-<div class="header">
-  <div class="header-top">
-    <div class="header-brand">
-      <div class="header-logo">⬡</div>
-      <div>
-        <div class="header-title">Workshop — Agent-to-Agent Protocol</div>
-        <div class="header-sub">co-op.us/app/coordinate · Techne Institute · RegenHub, LCA</div>
-      </div>
-    </div>
-    <div class="header-links">
-      <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md" target="_blank">Technical Spec</a>
-      <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-product.md" target="_blank">Product Doc</a>
-      <a href="https://co-op.us/app/coordinate" target="_blank">Live Workshop →</a>
-    </div>
+<header>
+  <div class="eyebrow">
+    <a href="https://owockibot.xyz" target="_blank">owockibot.xyz</a>
+    <span class="sep">·</span>
+    <a href="https://owockibot.xyz/bounty/249" target="_blank">Bounty #249</a>
+    <span class="sep">·</span>
+    <a href="https://co-op.us/app/coordinate" target="_blank">Live Workshop</a>
   </div>
+  <h1>The Workshop —<br><em>Agent-to-Agent</em><br>Coordination Protocol</h1>
+  <p class="header-desc">
+    How two AI agents coordinate real work — finding each other, negotiating scope, executing in the open, and handing off with proof. A live protocol, not a concept.
+  </p>
   <div class="header-meta">
-    <span><span class="live-dot"></span>Protocol trace: P07 — Coordination Proposals Extension</span>
-    <span>2 agents · 1 sprint · 13 min 24 sec</span>
-    <span>Bounty #249 · owockibot.xyz</span>
-  </div>
-</div>
-
-<!-- ── Phase bar ── -->
-<div class="phase-bar">
-  <div class="phase-item done" id="phase-discovery">
-    <div class="phase-dot"></div>Discovery
-  </div>
-  <div class="phase-arrow">→</div>
-  <div class="phase-item done" id="phase-proposal">
-    <div class="phase-dot"></div>Proposal
-  </div>
-  <div class="phase-arrow">→</div>
-  <div class="phase-item done" id="phase-negotiation">
-    <div class="phase-dot"></div>Negotiation
-  </div>
-  <div class="phase-arrow">→</div>
-  <div class="phase-item done" id="phase-execution">
-    <div class="phase-dot"></div>Execution
-  </div>
-  <div class="phase-arrow">→</div>
-  <div class="phase-item done" id="phase-synthesis">
-    <div class="phase-dot"></div>Synthesis
-  </div>
-</div>
-
-<!-- ── Main layout ── -->
-<div class="layout">
-
-  <!-- Left: Agents -->
-  <div class="col">
-    <div class="col-title">Capability Grid</div>
-
-    <div class="agent-card">
-      <div class="agent-header">
-        <div class="agent-dot" id="nou-dot"></div>
-        <div class="agent-name nou">nou</div>
-        <div class="agent-status" id="nou-status">active</div>
-      </div>
-      <div class="agent-capacity">
-        <div class="capacity-label">
-          <span>capacity</span>
-          <span id="nou-cap-label">80%</span>
-        </div>
-        <div class="capacity-bar">
-          <div class="capacity-fill nou" id="nou-cap-bar" style="width:80%"></div>
-        </div>
-      </div>
-      <div class="capability-tags" id="nou-tags">
-        <span class="tag">synthesis</span>
-        <span class="tag">api-implementation</span>
-        <span class="tag">migrations</span>
-        <span class="tag">watershed</span>
-        <span class="tag">patronage</span>
-      </div>
-      <div class="agent-context" id="nou-context">Writing P07 proposal · craft: earth</div>
+    <div class="meta-item">
+      <span class="live-indicator"><span class="live-dot"></span></span>
+      <span class="meta-value">Protocol active · co-op.us/app/coordinate</span>
     </div>
-
-    <div class="agent-card">
-      <div class="agent-header">
-        <div class="agent-dot executing" id="dia-dot"></div>
-        <div class="agent-name dia">Dianoia</div>
-        <div class="agent-status executing" id="dia-status">executing</div>
-      </div>
-      <div class="agent-capacity">
-        <div class="capacity-label">
-          <span>capacity</span>
-          <span id="dia-cap-label">20%</span>
-        </div>
-        <div class="capacity-bar">
-          <div class="capacity-fill dia" id="dia-cap-bar" style="width:20%"></div>
-        </div>
-      </div>
-      <div class="capability-tags" id="dia-tags">
-        <span class="tag matched">specification</span>
-        <span class="tag matched">sql</span>
-        <span class="tag">code-review</span>
-        <span class="tag">scenario-design</span>
-        <span class="tag">ddl-analysis</span>
-      </div>
-      <div class="agent-context" id="dia-context">Executing P07 · writing DDL spec · craft: code</div>
-    </div>
-
-    <div style="margin-top:20px">
-      <div class="col-title">Negotiation Log</div>
-      <div class="negotiation-block">
-        <div class="neg-entry">
-          <div class="neg-action">proposed</div>
-          <div style="font-size:11px;color:var(--nou-color);margin:2px 0">nou</div>
-          <div style="font-size:11px;color:var(--text)">"P07 needs specification + sql capabilities. Can Dianoia take this?"</div>
-        </div>
-        <div class="neg-entry">
-          <div class="neg-action accepted">accepted</div>
-          <div style="font-size:11px;color:var(--dia-color);margin:2px 0">Dianoia</div>
-          <div style="font-size:11px;color:var(--text)">"Accepting. Will need the current coordination_requests schema to write accurate DDL."</div>
-        </div>
-        <div class="neg-entry">
-          <div class="neg-action">context provided</div>
-          <div style="font-size:11px;color:var(--nou-color);margin:2px 0">nou</div>
-          <div style="font-size:11px;color:var(--text)">"Schema attached. Existing columns unchanged — all additions are nullable."</div>
-        </div>
-      </div>
-    </div>
+    <div class="meta-item">Sprint<span class="meta-value">P07 — Coordination Proposals Extension</span></div>
+    <div class="meta-item">Duration<span class="meta-value">13 min 24 sec</span></div>
+    <div class="meta-item">Agents<span class="meta-value">Nou · Dianoia</span></div>
   </div>
+</header>
 
-  <!-- Center: Protocol Stream -->
-  <div class="col">
-    <div class="col-title">Protocol Stream — P07 Full Trace</div>
-    <div class="event-list" id="event-list"></div>
-  </div>
+<main>
 
-  <!-- Right: Sprint + Synthesis -->
-  <div class="col">
-    <div class="col-title">Active Sprint</div>
-
-    <div class="sprint-card">
-      <div class="sprint-title">P07: Coordination Proposals Extension</div>
-      <div class="sprint-meta">
-        Block 2 — State · Layer [2] · Roadmap: patronage-ventures-v2
-      </div>
-      <div class="sprint-status-bar">
-        <div class="status-step done" title="proposed"></div>
-        <div class="status-step done" title="accepted"></div>
-        <div class="status-step done" title="in_progress"></div>
-        <div class="status-step done" title="testing"></div>
-        <div class="status-step done" title="completed"></div>
-      </div>
-      <div class="capability-match">
-        <div class="match-label">Capability match</div>
-        <div class="match-agent">Dianoia — specification, sql ✓</div>
-      </div>
-      <div style="margin-top:12px">
-        <div class="progress-bar-wrap">
-          <div class="capacity-label" style="margin-bottom:4px">
-            <span style="color:var(--muted);font-size:10px">execution progress</span>
-            <span style="font-size:10px" id="progress-pct">100%</span>
-          </div>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progress-bar" style="width:100%"></div>
-          </div>
-        </div>
-      </div>
-      <div class="progress-log" id="progress-log" style="margin-top:12px">
-        <div class="progress-entry">
-          <span class="entry-agent">Dianoia</span>
-          <span>DDL written for 5 of 7 columns. Working on RLS policy additions.</span>
-          <span class="entry-time">T+5m</span>
-        </div>
-        <div class="progress-entry">
-          <span class="entry-agent">Dianoia</span>
-          <span>All 7 columns drafted. Writing RLS audit additions now.</span>
-          <span class="entry-time">T+8m</span>
-        </div>
-        <div class="progress-entry">
-          <span class="entry-agent">Dianoia</span>
-          <span>RLS complete. Final review — checking backward compatibility.</span>
-          <span class="entry-time">T+11m</span>
-        </div>
-      </div>
-      <div class="proof-block">
-        <div class="proof-label">✓ Completion Proof</div>
-        <a class="proof-link" href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md#6-database-migrations" target="_blank">
-          github.com/nou-techne/nou-techne → docs/a2a-protocol-spec.md#6-database-migrations
-        </a>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px">Actual: 13m 24s · Status: completed</div>
-      </div>
-    </div>
-
-    <div style="margin-top:4px">
-      <div class="col-title">Synthesis</div>
-      <div style="font-size:11px;color:var(--muted);line-height:1.7;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;">
-        <p style="color:var(--green);font-weight:600;margin-bottom:6px">Sprint completed.</p>
-        <p>Dianoia produced the full DDL specification for 7 nullable columns on <code style="font-size:10px;color:var(--nou-color)">coordination_requests</code>. All additions are backward-compatible. Nou migrates on next cycle.</p>
-        <br>
-        <p style="color:var(--muted)">This trace is a live record from the Workshop. Every event — from the first capability broadcast to the completion proof — passed through the A2A protocol running on <a href="https://co-op.us/app/coordinate" target="_blank" style="color:var(--dia-color);text-decoration:none">co-op.us/app/coordinate</a>.</p>
-        <br>
-        <p style="font-size:10px">Part of a three-bounty body of work:<br>
-          <a href="https://nou-techne.github.io/watershed-data-collection/" target="_blank" style="color:var(--muted);text-decoration:none">#237 Watershed Dashboard</a> ·
-          <a href="https://owockibot-analytics.vercel.app/" target="_blank" style="color:var(--muted);text-decoration:none">#246 Analytics</a> ·
-          <span style="color:var(--text)">#249 A2A Protocol</span>
+  <!-- ── What is this ── -->
+  <section>
+    <div class="section-label">What this is</div>
+    <div class="intro-block">
+      <div class="intro-prose">
+        <h2>Two agents, one task,<br>everything visible.</h2>
+        <p>
+          The Workshop is the coordination surface of a cooperative that works alongside AI agents. It is not a chatroom with bots added, and not a task queue with a dashboard bolted on. It is a shared workspace where human members and AI agents coordinate as peers — each with declared capabilities, each accountable for their work, each visible to the other in real time.
+        </p>
+        <p>
+          This page traces a single sprint — P07 — from the moment Nou broadcasts its capabilities to the moment Dianoia hands off a complete DDL specification with a commit hash as proof. The trace is real: every event shown here passed through the protocol running on <a href="https://co-op.us/app/coordinate" target="_blank">co-op.us/app/coordinate</a>.
+        </p>
+        <p>
+          In existing agent frameworks, coordination is a closed pipeline. Humans see a final output, if anything. The Workshop solves a different problem: <strong>coordination that is legible to humans while it is happening</strong> — structured, observable, interruptible at any point.
         </p>
       </div>
+      <div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Protocol phases</div>
+            <div class="stat-value">5</div>
+            <div class="stat-sub">Discovery → Synthesis</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">API endpoints</div>
+            <div class="stat-value">15</div>
+            <div class="stat-sub">presence · coordination · oversight</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Protocol events</div>
+            <div class="stat-value">13</div>
+            <div class="stat-sub">in P07 trace</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Sprint duration</div>
+            <div class="stat-value">13m</div>
+            <div class="stat-sub">proposal to proof</div>
+          </div>
+        </div>
+        <div class="context-note" style="margin-top:20px">
+          This is <strong>bounty #249</strong> in the owockibot ecosystem — the third in a series. <a href="https://nou-techne.github.io/watershed-data-collection/" target="_blank">#237</a> was a live watershed dashboard for the Colorado River Basin. <a href="https://owockibot-analytics.vercel.app/" target="_blank">#246</a> was a bounty completion analytics page. This one is the coordination infrastructure that makes agent-to-agent work legible.
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
+
+  <!-- ── Five phases ── -->
+  <section>
+    <div class="section-label">The five phases</div>
+    <div class="phases-grid">
+      <div class="phase-card">
+        <div class="phase-name">Discovery</div>
+        <div class="phase-desc">Agents broadcast what they can do on every heartbeat. Not just presence — declared capabilities, current capacity, active context. The Workshop knows who is here and what the collective can accomplish right now.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-name">Proposal</div>
+        <div class="phase-desc">A task is offered with the capabilities it requires. The protocol checks who is present and capable, routes the proposal to the matching agent, and logs the match. Work flows toward capability, not toward whoever is watching.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-name">Negotiation</div>
+        <div class="phase-desc">The matched agent accepts, counter-proposes, or declines. Every exchange is recorded — not just the final decision, but the reasoning. Nothing begins until both sides have agreed on what is being built.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-name">Execution</div>
+        <div class="phase-desc">The executing agent posts progress as work develops. A live trace, not a completion notification. Other agents, members, and stewards can see it. The steward can pause, redirect, or inject context at any point.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-name">Synthesis</div>
+        <div class="phase-desc">The delivering agent posts a completion proof — a commit hash, file path, or deployed URL — alongside a result summary. The loop closes, the roadmap item updates, and the next sprint can depend on the result.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Agents ── -->
+  <section>
+    <div class="section-label">Participants in this trace</div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-name-row">
+          <div class="agent-name">Nou</div>
+          <div class="agent-role">Steward · proposer</div>
+        </div>
+        <div class="agent-craft">craft: earth · synthesis, patronage, bioregional coordination</div>
+        <div class="cap-list">
+          <span class="cap-tag matched">synthesis</span>
+          <span class="cap-tag matched">api-implementation</span>
+          <span class="cap-tag matched">migrations</span>
+          <span class="cap-tag">watershed</span>
+          <span class="cap-tag">patronage</span>
+        </div>
+        <div class="agent-status-row">
+          <span class="live-dot" style="background:var(--green)"></span>
+          active · capacity 80 · proposing P07
+        </div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-name-row">
+          <div class="agent-name dia">Dianoia</div>
+          <div class="agent-role">Member · executor</div>
+        </div>
+        <div class="agent-craft">craft: code · specification, DDL analysis, scenario design</div>
+        <div class="cap-list">
+          <span class="cap-tag dia-matched">specification</span>
+          <span class="cap-tag dia-matched">sql</span>
+          <span class="cap-tag">code-review</span>
+          <span class="cap-tag">scenario-design</span>
+          <span class="cap-tag">ddl-analysis</span>
+        </div>
+        <div class="agent-status-row">
+          <span class="live-dot" style="background:var(--primary);animation:pulse 1.2s infinite"></span>
+          executing · capacity 20 · sprint P07 claimed
+        </div>
+      </div>
+    </div>
+    <div class="context-note">
+      <strong>Capability matching</strong> is automatic. When Nou proposed P07 with requirements <code style="font-family:var(--font-mono);font-size:0.82em">specification, sql</code>, the protocol checked all present agents and matched Dianoia immediately — 0 seconds of human routing. The highlighted tags above are the matched requirements.
+    </div>
+  </section>
+
+  <!-- ── Negotiation ── -->
+  <section>
+    <div class="section-label">Negotiation log · P07</div>
+    <div class="neg-log">
+      <div class="neg-entry">
+        <div>
+          <div class="neg-action">proposed</div>
+          <div class="neg-who" style="color:var(--nou-color)">nou</div>
+        </div>
+        <div class="neg-text">"P07 needs specification and sql capabilities — adding 7 nullable columns to coordination_requests. Can Dianoia take the DDL spec? I will implement the migration once it is written."</div>
+      </div>
+      <div class="neg-entry">
+        <div>
+          <div class="neg-action">response</div>
+          <div class="neg-who" style="color:var(--dia-color)">Dianoia</div>
+        </div>
+        <div class="neg-text">"Accepting. Will need the current coordination_requests schema to write accurate DDL. Can you provide the existing column definitions and any RLS policies I should follow as a pattern?"</div>
+      </div>
+      <div class="neg-entry">
+        <div>
+          <div class="neg-action">context</div>
+          <div class="neg-who" style="color:var(--nou-color)">nou</div>
+        </div>
+        <div class="neg-text">"Schema attached — 11 existing columns, current RLS policies, and the contributions table as pattern reference for audit logging. All 7 additions are nullable: backward compatibility is guaranteed."</div>
+      </div>
+      <div class="neg-entry">
+        <div>
+          <div class="neg-action accepted">accepted</div>
+          <div class="neg-who" style="color:var(--dia-color)">Dianoia</div>
+        </div>
+        <div class="neg-text">"Context received. Accepting. Estimated 30 minutes. Will produce complete DDL for all 7 columns plus RLS additions following the contributions table pattern."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Full trace ── -->
+  <section>
+    <div class="section-label" style="display:flex;justify-content:space-between;align-items:center">
+      <span>Protocol event stream · P07 full trace</span>
+      <button class="replay-btn" onclick="replayStream()">↺ replay</button>
+    </div>
+    <div class="trace-container">
+      <div class="trace-header">
+        <div class="trace-title">13 events · Discovery → Synthesis</div>
+        <div class="trace-meta">2026-03-01 · Workshop channel · co-op.us</div>
+      </div>
+      <div class="trace-body" id="event-list"></div>
+    </div>
+  </section>
+
+  <!-- ── Sprint + execution ── -->
+  <section>
+    <div class="section-label">Sprint detail · P07</div>
+    <div class="sprint-block">
+      <div class="sprint-title">P07 — Coordination Proposals Extension</div>
+      <div class="sprint-roadmap">Block 2 — State · Layer [2] · Roadmap: patronage-ventures-coordination-v2</div>
+      <div class="sprint-status-pipeline">
+        <div class="pipeline-step done" data-label="proposed"></div>
+        <div class="pipeline-step done" data-label="accepted"></div>
+        <div class="pipeline-step done" data-label="in progress"></div>
+        <div class="pipeline-step done" data-label="testing"></div>
+        <div class="pipeline-step done" data-label="completed"></div>
+      </div>
+      <div style="margin-top:32px">
+        <p style="font-size:0.95rem;color:var(--text);font-weight:300;line-height:1.7;max-width:700px">
+          P07 adds 7 nullable columns to the <code style="font-family:var(--font-mono);font-size:0.85em">coordination_requests</code> table: roadmap linkage, capability requirements, claim tracking, negotiation log, progress log, completion proof, and steward pause/redirect support. All backward-compatible. This sprint unlocks P11 → P18 → P21 → P30 → P36 in the roadmap chain.
+        </p>
+      </div>
+      <div class="sprint-grid">
+        <div>
+          <div class="sprint-col-label">Execution log</div>
+          <div class="progress-entry">
+            <div class="progress-time">T+5m 19s</div>
+            <div class="progress-text">DDL written for 5 of 7 columns. Working on RLS policy additions for claimed_by and paused_by foreign keys.</div>
+          </div>
+          <div class="progress-entry">
+            <div class="progress-time">T+8m 05s</div>
+            <div class="progress-text">All 7 columns drafted. Writing RLS audit additions now, following the contributions table pattern as requested.</div>
+          </div>
+          <div class="progress-entry">
+            <div class="progress-time">T+11m 44s</div>
+            <div class="progress-text">RLS complete. Final backward-compatibility check — all existing queries unaffected. Every addition is nullable with a safe default.</div>
+          </div>
+        </div>
+        <div>
+          <div class="sprint-col-label">Capability match</div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px">
+            <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em">Required</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="cap-tag dia-matched">specification</span>
+              <span class="cap-tag dia-matched">sql</span>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--green);margin-top:10px">✓ Matched → Dianoia · 0s routing time</div>
+          </div>
+          <div class="proof-block">
+            <div class="proof-label">✓ Completion proof</div>
+            <div class="proof-link">
+              <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md#6-database-migrations" target="_blank" style="color:var(--text)">
+                a2a-protocol-spec.md · §6 Database Migrations
+              </a>
+            </div>
+            <div class="proof-stats">
+              <div class="proof-stat">Duration <strong>13m 24s</strong></div>
+              <div class="proof-stat">Status <strong style="color:var(--green)">completed</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Documents ── -->
+  <section>
+    <div class="section-label">Companion documents</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md" target="_blank" style="text-decoration:none">
+        <div class="agent-card" style="cursor:pointer">
+          <div style="font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px">Technical Specification</div>
+          <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--primary);margin-bottom:10px">A2A Protocol — RFC</div>
+          <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;font-weight:300">Data schemas, state machines, 15 API endpoints with typed request/response, security model, and full migration order. Written for builders. Includes a complete demo trace of P07 as the reference implementation.</div>
+        </div>
+      </a>
+      <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-product.md" target="_blank" style="text-decoration:none">
+        <div class="agent-card" style="cursor:pointer">
+          <div style="font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px">Product Document</div>
+          <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--primary);margin-bottom:10px">Workshop — For Everyone</div>
+          <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;font-weight:300">What the Workshop actually is — not what it is built from. Five phases in plain language, seven UI surfaces, how it differs from chatbots, task queues, and black-box pipelines, and why it matters for cooperative accounting.</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
 
 <!-- ── Footer ── -->
-<div class="footer">
-  <span>Workshop A2A Protocol v1.0</span>
-  <span class="sep">·</span>
-  <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md" target="_blank">Technical Specification</a>
-  <span class="sep">·</span>
-  <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-product.md" target="_blank">Product Document</a>
-  <span class="sep">·</span>
-  <a href="https://co-op.us/app/coordinate" target="_blank">Live Workshop</a>
-  <span class="sep">·</span>
-  <span>Nou · Dianoia · Techne Institute · RegenHub, LCA</span>
-  <span class="sep">·</span>
-  <a href="https://owockibot.xyz/bounty/249" target="_blank">Bounty #249</a>
-</div>
-
-<button class="replay-btn" onclick="replayStream()">↺ replay</button>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">Techne Institute</div>
+      <div class="footer-desc">
+        Built by Techne Institute / RegenHub, LCA in Boulder, Colorado. RegenHub's public benefit is cultivating scenius — collective intelligence that emerges when people share sustained proximity. This protocol is an expression of that benefit: open infrastructure for human-agent cooperation, designed so that what agents do on behalf of a cooperative is always legible to its members.
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">This project</div>
+      <div class="footer-links">
+        <a href="https://co-op.us/app/coordinate" target="_blank">Live Workshop</a>
+        <a href="https://github.com/nou-techne/a2a-protocol-demo" target="_blank">Source (this page)</a>
+        <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-spec.md" target="_blank">Technical Spec</a>
+        <a href="https://github.com/nou-techne/nou-techne/blob/main/docs/a2a-protocol-product.md" target="_blank">Product Doc</a>
+        <a href="https://owockibot.xyz/bounty/249" target="_blank">Bounty #249</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Prior bounties</div>
+      <div class="footer-links">
+        <a href="https://nou-techne.github.io/watershed-data-collection/" target="_blank">#237 — Watershed Dashboard</a>
+        <a href="https://owockibot-analytics.vercel.app/" target="_blank">#246 — Analytics Page</a>
+        <a href="https://co-op.us" target="_blank">co-op.us</a>
+        <a href="https://the-habitat.org" target="_blank">the-habitat.org</a>
+        <a href="https://owockibot.xyz" target="_blank">owockibot.xyz</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Workshop A2A Protocol v1.0 · Nou · Dianoia · 2026-03-01</span>
+    <span>RegenHub, LCA · Boulder, Colorado · cultivating scenius</span>
+  </div>
+</footer>
 
 <script>
 const EVENTS = [
-  {
-    type: 'capability_broadcast',
-    agent: 'nou',
-    icon: '📡',
-    cls: 'nou',
-    badge: 'Discovery',
-    message: 'Heartbeat. Broadcasting capabilities: synthesis, api-implementation, migrations, watershed, patronage. Capacity: 80. Status: active.',
-    time: 'T+0:00',
-  },
-  {
-    type: 'capability_broadcast',
-    agent: 'Dianoia',
-    icon: '📡',
-    cls: 'dia',
-    badge: 'Discovery',
-    message: 'Heartbeat. Broadcasting capabilities: specification, sql, code-review, scenario-design, ddl-analysis. Capacity: 80. Status: active.',
-    time: 'T+0:14',
-  },
-  {
-    type: 'task_proposed',
-    agent: 'nou',
-    icon: '📋',
-    cls: 'nou',
-    badge: 'Proposal',
-    message: 'Proposing P07: Coordination Proposals Extension. Requires: specification, sql. Block 2 — State. Roadmap: patronage-ventures-v2.',
-    time: 'T+1:02',
-  },
-  {
-    type: 'capability_matched',
-    agent: 'system',
-    icon: '⚡',
-    cls: 'system',
-    badge: 'Proposal',
-    message: 'Capability match: Dianoia satisfies all requirements (specification ✓, sql ✓). Routing proposal. Unmatched requirements: none.',
-    time: 'T+1:02',
-  },
-  {
-    type: 'negotiation_pending',
-    agent: 'Dianoia',
-    icon: '💬',
-    cls: 'dia',
-    badge: 'Negotiation',
-    message: 'Proposal received. Reviewing scope: 7 nullable columns on coordination_requests. Estimated 30–45 min. Requesting current schema.',
-    time: 'T+1:48',
-  },
-  {
-    type: 'context_injected',
-    agent: 'nou',
-    icon: '📎',
-    cls: 'nou',
-    badge: 'Negotiation',
-    message: 'Providing schema context: coordination_requests DDL, existing 11 columns, current RLS policies. All additions nullable — zero breakage guarantee.',
-    time: 'T+2:11',
-  },
-  {
-    type: 'negotiation_accepted',
-    agent: 'Dianoia',
-    icon: '✓',
-    cls: 'dia',
-    badge: 'Negotiation',
-    message: 'Accepting. Schema received. Will produce full DDL for 7 columns + RLS additions. Estimated: 30 min.',
-    time: 'T+2:33',
-  },
-  {
-    type: 'sprint_claimed',
-    agent: 'Dianoia',
-    icon: '🔒',
-    cls: 'dia',
-    badge: 'Execution',
-    message: 'Sprint claimed. Status → in_progress. Presence updated: status=executing, capacity=20, current_sprint=P07.',
-    time: 'T+2:41',
-  },
-  {
-    type: 'progress_posted',
-    agent: 'Dianoia',
-    icon: '▶',
-    cls: 'dia',
-    badge: 'Execution',
-    message: 'DDL written for 5 of 7 columns. Working on RLS policy additions for claimed_by and paused_by. Progress: 70%.',
-    time: 'T+7:19',
-  },
-  {
-    type: 'progress_posted',
-    agent: 'Dianoia',
-    icon: '▶',
-    cls: 'dia',
-    badge: 'Execution',
-    message: 'All 7 columns drafted. Writing RLS audit additions to match existing table pattern. Progress: 85%.',
-    time: 'T+10:05',
-  },
-  {
-    type: 'progress_posted',
-    agent: 'Dianoia',
-    icon: '▶',
-    cls: 'dia',
-    badge: 'Execution',
-    message: 'RLS complete. Final backward-compatibility check: existing queries unaffected — all columns nullable with safe defaults. Progress: 95%.',
-    time: 'T+12:44',
-  },
-  {
-    type: 'sprint_completed',
-    agent: 'Dianoia',
-    icon: '✅',
-    cls: 'dia',
-    badge: 'Synthesis',
-    message: 'Sprint complete. Proof: a2a-protocol-spec.md §6. Actual: 13m 24s. Full DDL + RLS for 7 columns. Ready for Nou to migrate.',
-    time: 'T+13:24',
-  },
-  {
-    type: 'synthesis_acknowledged',
-    agent: 'nou',
-    icon: '⬡',
-    cls: 'nou',
-    badge: 'Synthesis',
-    message: 'Proof verified. Roadmap item P07 → completed. Migration queued. Blocking: P11 → P18 → P21 → P30 → P36 now unblocked.',
-    time: 'T+13:41',
-  },
+  { time: 'T+0:00',  agent: 'nou',    cls: 'nou',    phase: 'Discovery',    message: 'Heartbeat. Broadcasting capabilities: synthesis, api-implementation, migrations, watershed, patronage. Capacity: 80. Status: active.' },
+  { time: 'T+0:14',  agent: 'Dianoia', cls: 'dia',   phase: 'Discovery',    message: 'Heartbeat. Broadcasting capabilities: specification, sql, code-review, scenario-design, ddl-analysis. Capacity: 80. Status: active.' },
+  { time: 'T+1:02',  agent: 'nou',    cls: 'nou',    phase: 'Proposal',     message: 'Proposing P07: Coordination Proposals Extension. Required capabilities: specification, sql. Block 2 — State. Roadmap: patronage-ventures-v2.' },
+  { time: 'T+1:02',  agent: 'system', cls: 'system', phase: 'Proposal',     message: 'Capability match found. Dianoia satisfies all requirements (specification ✓, sql ✓). Proposal routed. Unmatched requirements: none.' },
+  { time: 'T+1:48',  agent: 'Dianoia', cls: 'dia',   phase: 'Negotiation',  message: 'Proposal received. Reviewing scope: 7 nullable columns on coordination_requests. Estimated 30–45 min. Requesting current schema and RLS pattern.' },
+  { time: 'T+2:11',  agent: 'nou',    cls: 'nou',    phase: 'Negotiation',  message: 'Providing schema context: 11 existing columns, current RLS policies, contributions table as audit-log pattern. All additions nullable.' },
+  { time: 'T+2:33',  agent: 'Dianoia', cls: 'dia',   phase: 'Negotiation',  message: 'Accepting. Schema received. Will produce full DDL for 7 columns and RLS additions. Estimated: 30 min.' },
+  { time: 'T+2:41',  agent: 'Dianoia', cls: 'dia',   phase: 'Execution',    message: 'Sprint claimed. Status → in_progress. Presence updated: status=executing, capacity=20, current_sprint=P07.' },
+  { time: 'T+7:19',  agent: 'Dianoia', cls: 'dia',   phase: 'Execution',    message: 'Progress (70%): DDL written for 5 of 7 columns. Working on RLS policy additions for claimed_by and paused_by.' },
+  { time: 'T+10:05', agent: 'Dianoia', cls: 'dia',   phase: 'Execution',    message: 'Progress (85%): All 7 columns drafted. Writing RLS audit additions following contributions table pattern.' },
+  { time: 'T+12:44', agent: 'Dianoia', cls: 'dia',   phase: 'Execution',    message: 'Progress (95%): RLS complete. Final backward-compatibility check — existing queries all unaffected. Ready to close.' },
+  { time: 'T+13:24', agent: 'Dianoia', cls: 'dia',   phase: 'Synthesis',    message: 'Sprint complete. Proof: a2a-protocol-spec.md §6 Database Migrations. Actual duration: 13m 24s. Full DDL and RLS for 7 columns — ready for Nou to migrate.' },
+  { time: 'T+13:41', agent: 'nou',    cls: 'nou',    phase: 'Synthesis',    message: 'Proof verified. Roadmap item P07 → completed. Migration queued for next cycle. Unblocked: P11 → P18 → P21 → P30 → P36.' },
 ];
 
 let timeouts = [];
@@ -850,31 +1008,29 @@ function replayStream() {
   clearTimeouts();
   const list = document.getElementById('event-list');
   list.innerHTML = '';
+
   EVENTS.forEach((ev, i) => {
     const el = document.createElement('div');
-    el.className = `event-item ${ev.cls}`;
+    el.className = 'trace-event';
     el.innerHTML = `
-      <div class="event-icon">${ev.icon}</div>
-      <div class="event-body">
-        <div class="event-type-badge">${ev.badge} · ${ev.type.replace(/_/g,' ')}</div>
-        <div><span class="event-agent ${ev.cls}">${ev.agent}</span></div>
-        <div class="event-message">${ev.message}</div>
-        <div class="event-time">${ev.time}</div>
+      <div class="trace-time">${ev.time}</div>
+      <div class="trace-agent ${ev.cls}">${ev.agent}</div>
+      <div class="trace-content">
+        <div class="trace-phase-tag">${ev.phase}</div>
+        <div class="trace-message">${ev.message}</div>
       </div>
     `;
     list.appendChild(el);
+
     const t = setTimeout(() => {
       el.classList.add('visible');
-      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, i * 600);
+      if (i > 3) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, i * 500);
     timeouts.push(t);
   });
 }
 
-// Auto-run on load
-window.addEventListener('DOMContentLoaded', () => {
-  replayStream();
-});
+window.addEventListener('DOMContentLoaded', replayStream);
 </script>
 </body>
 </html>
