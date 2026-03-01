@@ -1227,7 +1227,6 @@ function replayStream() {
 
     const t = setTimeout(() => {
       el.classList.add('visible');
-      if (i > 3) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, i * 500);
     timeouts.push(t);
   });
