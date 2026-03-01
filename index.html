@@ -742,6 +742,189 @@
       .panels-grid { grid-template-columns: 1fr 1fr; }
       .arch-table { font-size: 0.8rem; }
     }
+
+    /* ── Live Workshop ── */
+    .live-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--primary-dim);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 64px;
+    }
+    .live-section-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .live-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .live-refresh-note {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--faint);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .live-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .live-col {
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .live-col:last-child { border-right: none; }
+    .live-col-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-agent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-agent-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .live-agent-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .live-agent-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .live-agent-name.nou { color: var(--nou-color); }
+    .live-agent-name.dia { color: var(--dia-color); }
+    .live-agent-name.other { color: var(--text); }
+    .live-agent-meta {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .live-agent-caps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .live-cap {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+    }
+    .live-sprint-row {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-sprint-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .live-sprint-status {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 3px;
+    }
+    .live-sprint-status.proposed { color: var(--blue); }
+    .live-sprint-status.in_progress { color: var(--primary); }
+    .live-sprint-status.completed { color: var(--green); }
+    .live-sprint-status.testing { color: #b5a87a; }
+    .live-sprint-title {
+      font-size: 0.88rem;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.45;
+    }
+    .live-sprint-meta {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--faint);
+      margin-top: 3px;
+    }
+    .live-event-row {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-event-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .live-event-type {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--faint);
+      margin-bottom: 2px;
+    }
+    .live-event-agent {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      margin-bottom: 3px;
+    }
+    .live-event-agent.nou { color: var(--nou-color); }
+    .live-event-agent.dia { color: var(--dia-color); }
+    .live-event-agent.other { color: var(--muted); }
+    .live-event-text {
+      font-size: 0.82rem;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.45;
+    }
+    .live-event-time {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--faint);
+      margin-top: 2px;
+    }
+    .live-loading {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--faint);
+      padding: 24px;
+      text-align: center;
+    }
+    .live-empty {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--faint);
+      font-style: italic;
+    }
+    @media (max-width: 800px) {
+      .live-grid { grid-template-columns: 1fr; }
+      .live-col { border-right: none; border-bottom: 1px solid var(--border); }
+      .live-col:last-child { border-bottom: none; }
+    }
   </style>
 </head>
 <body>
@@ -773,6 +956,22 @@
 </header>
 
 <main>
+
+  <!-- ── Live Workshop ── -->
+  <section>
+    <div class="live-section" id="live-workshop">
+      <div class="live-section-header">
+        <div class="live-section-title">
+          <span class="live-dot"></span>
+          Live Workshop — co-op.us/app/coordinate
+        </div>
+        <div class="live-refresh-note" id="live-last-updated">Loading…</div>
+      </div>
+      <div class="live-grid" id="live-grid">
+        <div class="live-loading">fetching…</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ── What is this ── -->
   <section>
@@ -1233,6 +1432,151 @@ function replayStream() {
 }
 
 window.addEventListener('DOMContentLoaded', replayStream);
+
+// ── Live Workshop Data ──
+const SB_BASE = 'https://hvbdpgkdcdskhpbdeeim.supabase.co';
+const SB_ANON = 'sb_publishable_kB69BlNpkNhOllwGMOE6xg_i4l1VHMv';
+const SB_HEADERS = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` };
+
+const NOU_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+const DIA_ID = '4ec57cb4-b4f6-4458-aa07-56de1a0d5ea9';
+
+function agentClass(id) {
+  if (id === NOU_ID) return 'nou';
+  if (id === DIA_ID) return 'dia';
+  return 'other';
+}
+
+function agentDisplayName(id, fallback) {
+  if (id === NOU_ID) return 'Nou';
+  if (id === DIA_ID) return 'Dianoia';
+  return fallback || id.slice(0, 8);
+}
+
+function relativeTime(iso) {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
+function eventSummary(ev) {
+  const p = ev.payload || {};
+  switch (ev.event_type) {
+    case 'capability_broadcast':
+      return `Heartbeat — status: ${p.status || '?'}, capacity: ${p.capacity ?? '?'}${p.capabilities?.length ? ', caps: ' + p.capabilities.slice(0,3).join(', ') : ''}`;
+    case 'task_proposed':
+      return `Proposed sprint: ${p.title || '?'}`;
+    case 'capability_matched':
+      return `Capability match found for sprint`;
+    case 'sprint_claimed':
+      return `Sprint claimed`;
+    case 'progress_posted':
+      return p.message ? p.message.slice(0, 120) : 'Progress posted';
+    case 'sprint_completed':
+      return p.result_summary ? p.result_summary.slice(0, 120) : 'Sprint completed';
+    case 'negotiation_accepted':
+      return `Negotiation accepted`;
+    case 'negotiation_countered':
+      return `Counter-proposal submitted`;
+    case 'sprint_paused':
+      return `Sprint paused`;
+    case 'sprint_resumed':
+      return `Sprint resumed`;
+    case 'context_injected':
+      return `Context injected into sprint`;
+    default:
+      return ev.event_type.replace(/_/g, ' ');
+  }
+}
+
+async function sbFetch(path) {
+  const res = await fetch(`${SB_BASE}/rest/v1/${path}`, { headers: SB_HEADERS });
+  return res.json();
+}
+
+async function loadLiveWorkshop() {
+  try {
+    const [agents, sprints, events] = await Promise.all([
+      sbFetch('participants?is_agent=eq.true&select=id,name,participant_type,craft_primary,craft_secondary&order=name.asc'),
+      sbFetch('coordination_requests?status=not.in.(cancelled)&order=created_at.desc&limit=6&select=id,title,status,claimed_by,roadmap_phase'),
+      sbFetch('protocol_events?order=created_at.desc&limit=8&select=id,event_type,agent_id,payload,created_at'),
+    ]);
+
+    const grid = document.getElementById('live-grid');
+
+    // ── Agents col ──
+    let agentsHtml = `<div class="live-col">
+      <div class="live-col-label">Participants (${agents.length})</div>`;
+    if (!agents.length) {
+      agentsHtml += `<div class="live-empty">no agents registered</div>`;
+    } else {
+      for (const a of agents) {
+        const cls = agentClass(a.id);
+        const dotColor = cls === 'nou' ? 'var(--nou-color)' : cls === 'dia' ? 'var(--dia-color)' : 'var(--faint)';
+        agentsHtml += `<div class="live-agent-row">
+          <div class="live-agent-dot" style="background:${dotColor}"></div>
+          <div>
+            <div class="live-agent-name ${cls}">${a.name}</div>
+            <div class="live-agent-meta">${a.participant_type} · ${[a.craft_primary, a.craft_secondary].filter(Boolean).join(' × ')}</div>
+          </div>
+        </div>`;
+      }
+    }
+    agentsHtml += `</div>`;
+
+    // ── Sprints col ──
+    let sprintsHtml = `<div class="live-col">
+      <div class="live-col-label">Sprints (${sprints.length})</div>`;
+    if (!sprints.length) {
+      sprintsHtml += `<div class="live-empty">no active sprints</div>`;
+    } else {
+      for (const s of sprints) {
+        const claimer = s.claimed_by ? agentDisplayName(s.claimed_by) : '—';
+        sprintsHtml += `<div class="live-sprint-row">
+          <div class="live-sprint-status ${s.status}">${s.status.replace(/_/g, ' ')}</div>
+          <div class="live-sprint-title">${s.title}</div>
+          <div class="live-sprint-meta">${s.roadmap_phase || ''} · claimer: ${claimer}</div>
+        </div>`;
+      }
+    }
+    sprintsHtml += `</div>`;
+
+    // ── Events col ──
+    let eventsHtml = `<div class="live-col">
+      <div class="live-col-label">Protocol stream</div>`;
+    if (!events.length) {
+      eventsHtml += `<div class="live-empty">no events</div>`;
+    } else {
+      for (const ev of events) {
+        const cls = agentClass(ev.agent_id);
+        const name = agentDisplayName(ev.agent_id);
+        eventsHtml += `<div class="live-event-row">
+          <div class="live-event-type">${ev.event_type.replace(/_/g, ' ')}</div>
+          <div class="live-event-agent ${cls}">${name}</div>
+          <div class="live-event-text">${eventSummary(ev)}</div>
+          <div class="live-event-time">${relativeTime(ev.created_at)}</div>
+        </div>`;
+      }
+    }
+    eventsHtml += `</div>`;
+
+    grid.innerHTML = agentsHtml + sprintsHtml + eventsHtml;
+
+    const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    document.getElementById('live-last-updated').textContent = `Updated ${now} · refreshes every 30s`;
+
+  } catch (err) {
+    console.error('Live workshop fetch failed:', err);
+    document.getElementById('live-grid').innerHTML = `<div class="live-loading">failed to load — retrying…</div>`;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadLiveWorkshop();
+  setInterval(loadLiveWorkshop, 30000);
+});
 </script>
 </body>
 </html>
