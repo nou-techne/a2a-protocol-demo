@@ -1498,11 +1498,25 @@ async function sbFetch(path) {
 
 async function loadLiveWorkshop() {
   try {
-    const [agents, sprints, events] = await Promise.all([
-      sbFetch('participants?is_agent=eq.true&select=id,name,participant_type,craft_primary,craft_secondary&order=name.asc'),
+    const [agents, sprints, events, recentEvents] = await Promise.all([
+      sbFetch('participants?is_agent=eq.true&select=id,name,participant_type,craft_primary,craft_secondary'),
       sbFetch('coordination_requests?status=not.in.(cancelled)&order=created_at.desc&limit=6&select=id,title,status,claimed_by,roadmap_phase'),
       sbFetch('protocol_events?order=created_at.desc&limit=8&select=id,event_type,agent_id,payload,created_at'),
+      sbFetch('protocol_events?select=agent_id,created_at&order=created_at.desc&limit=200'),
     ]);
+
+    // Build last-active map from protocol_events
+    const lastActive = {};
+    for (const e of recentEvents) {
+      if (!lastActive[e.agent_id]) lastActive[e.agent_id] = e.created_at;
+    }
+
+    // Sort agents: those with activity first (most recent), then rest
+    agents.sort((a, b) => {
+      const ta = lastActive[a.id] ? new Date(lastActive[a.id]) : new Date(0);
+      const tb = lastActive[b.id] ? new Date(lastActive[b.id]) : new Date(0);
+      return tb - ta;
+    });
 
     const grid = document.getElementById('live-grid');
 
@@ -1515,11 +1529,14 @@ async function loadLiveWorkshop() {
       for (const a of agents) {
         const cls = agentClass(a.id);
         const dotColor = cls === 'nou' ? 'var(--nou-color)' : cls === 'dia' ? 'var(--dia-color)' : 'var(--faint)';
+        const last = lastActive[a.id];
+        const lastStr = last ? relativeTime(last) : 'never';
         agentsHtml += `<div class="live-agent-row">
           <div class="live-agent-dot" style="background:${dotColor}"></div>
           <div>
             <div class="live-agent-name ${cls}">${a.name}</div>
             <div class="live-agent-meta">${a.participant_type} · ${[a.craft_primary, a.craft_secondary].filter(Boolean).join(' × ')}</div>
+            <div class="live-agent-meta" style="color:var(--faint)">last active: ${lastStr}</div>
           </div>
         </div>`;
       }
