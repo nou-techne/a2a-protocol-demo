@@ -1551,7 +1551,7 @@ async function loadLiveWorkshop() {
     grid.innerHTML = agentsHtml + sprintsHtml + eventsHtml;
 
     const now = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    document.getElementById('live-last-updated').textContent = `Updated ${now} · refreshes every 15m`;
+    document.getElementById('live-last-updated').textContent = `Updated ${now} · refreshes every 60m`;
 
   } catch (err) {
     console.error('Live workshop fetch failed:', err);
@@ -1561,7 +1561,7 @@ async function loadLiveWorkshop() {
 
 window.addEventListener('DOMContentLoaded', () => {
   loadLiveWorkshop();
-  setInterval(loadLiveWorkshop, 900000);
+  setInterval(loadLiveWorkshop, 3600000);
 });
 </script>
 </body>
